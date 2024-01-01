@@ -7,7 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import cashierImage from "../../../public/images/cashier.png";
-import { fetchData, postData } from "@/utils/api-service";
+import { postData } from "@/utils/api-service";
+import { useState } from "react";
 
 const Login = () => {
   const router = useRouter();
@@ -18,11 +19,16 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    log(data);
-    postData("auth/login", data)
-      .then((result) => log(result))
-      .catch((err) => log(err));
+  const [login, setLogin] = useState();
+
+  const onSubmit = async (data) => {
+    try {
+      const loginDetail = await postData("auth/login", {}, data);
+      setLogin(loginDetail);
+    } catch (error) {
+      log(error);
+    }
+
     // router.push("/dashboard");
   };
 
@@ -34,7 +40,7 @@ const Login = () => {
             <h2 className='text-blue-500 text-2xl font-bold'>
               {appConfig.appName},{" "}
               <span className='text-white text-sm font-normal'>
-                bisnis apapun kasirnya pakai kasuirqu
+                bisnis apapun kasirnya pakai kasirqu
               </span>
             </h2>
             <h2 className='text-blue-500 text-2xl font-bold'>
@@ -74,7 +80,10 @@ const Login = () => {
           <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
             <form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
               <div>
-                <label className='block text-sm font-medium leading-6' for="email">
+                <label
+                  className='block text-sm font-medium leading-6'
+                  for='email'
+                >
                   Email address
                 </label>
                 <div className='mt-2'>
@@ -91,7 +100,10 @@ const Login = () => {
 
               <div>
                 <div className='flex items-center justify-between'>
-                  <label className='block text-sm font-medium leading-6' for="password">
+                  <label
+                    className='block text-sm font-medium leading-6'
+                    for='password'
+                  >
                     Password
                   </label>
                   <div className='text-sm'>
